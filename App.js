@@ -4,25 +4,64 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
-  ImageBackground,
   TouchableOpacity,
   TextInput,
   FlatList,
-  SearchNormal1,
 } from 'react-native';
-import {
-  Notification,
-  Receipt21,
-  Clock,
-  Message,
-  Setting,
-  Menu,
-  ArrowLeft,
-  MoneyRecive,
-  User,Camera,Moneys,
-} from 'iconsax-react-native';
+import {User, Camera, Moneys} from 'iconsax-react-native';
+import {Element3} from 'iconsax-react-native';
+import {BlogList, CategoryList} from './data';
 import {fontType, colors} from './src/theme';
+import {ListHorizontal, ListVertical} from './src/components';
+
+const ItemCategory = ({item, onPress, color}) => {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <View style={category.item}>
+        <Text style={{...category.title, color}}>{item.categoryName}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const FlatListCategory = () => {
+  const [selected, setSelected] = useState(1);
+  const renderItem = ({item}) => {
+    const color = item.id === selected ? colors.black() : colors.grey();
+    return (
+      <ItemCategory
+        item={item}
+        onPress={() => setSelected(item.id)}
+        color={color}
+      />
+    );
+  };
+  return (
+    <FlatList
+      data={CategoryList}
+      keyExtractor={item => item.id}
+      renderItem={item => renderItem({...item})}
+      ItemSeparatorComponent={() => <View style={{width: 10}} />}
+      contentContainerStyle={{paddingHorizontal: 3}}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+    />
+  );
+};
+
+const ListBlog = () => {
+  // const horizontalData = BlogList.slice(0,1);
+  const verticalData = BlogList.slice(0, 5);
+
+  return (
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={styles.listBlog}>
+        {/* <ListHorizontal data={horizontalData} /> */}
+        <ListVertical data={verticalData} />
+      </View>
+    </ScrollView>
+  );
+};
 
 export default function App() {
   return (
@@ -43,7 +82,7 @@ export default function App() {
             style={{
               marginHorizontal: 20,
               marginVertical: 5,
-              backgroundColor: '#EEEEEE',
+              backgroundColor: '#D0D4CA',
               elevation: 2,
               padding: 20,
               borderRadius: 15,
@@ -54,142 +93,20 @@ export default function App() {
             </Text>
           </View>
         </View>
-
+        <Text style={{fontSize: 15, color: '#001524', marginVertical: 7}}>
+          Apa yang sedang anda Butuhkan?
+        </Text>
         <TextInput
           placeholder="Search"
           placeholderTextColor="#B4B4B3"
           style={styles.TextInput}
         />
+        <ListBlog />
+        <View style={styles.listCategory}>
+          <FlatListCategory />
+        </View>
+
         <View style={itemHorizontal.listCard}>
-          <View style={itemHorizontal.cardItem}>
-            <Image
-              style={itemHorizontal.cardImage}
-              source={{
-                uri: 'https://4.bp.blogspot.com/-T0rrdQjQ9Bk/Wj4n9RKk4nI/AAAAAAAAAYY/7XGt2fWN93IRyz1bDdOHMYWv1CohX-KeACLcBGAs/s640/Canon-EOS-6D-Mark-II.jpg',
-              }}
-            />
-            <View style={itemVertical.cardContent}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{gap: 2, width: '100%'}}>
-                  <Text style={itemVertical.cardCategory}>Kamera Canon</Text>
-                  <Text style={itemVertical.cardTitle}>
-                    Kamera EOS 6D Mark II
-                  </Text>
-                </View>
-              </View>
-              <View style={itemVertical.cardInfo}>
-                {/* <MoneyRecive size={16} variant="Bold" color={colors.grey(0.6)} /> */}
-                <Text style={itemVertical.cardText}>Rp. 15.000.000</Text>
-                <Message size={10} variant="Linear" color={colors.grey(0.6)} />
-                <Text style={itemVertical.cardText}>Tersedia 10 </Text>
-              </View>
-            </View>
-          </View>
-
-          <View style={itemHorizontal.cardItem}>
-            <Image
-              style={itemHorizontal.cardImage}
-              source={{
-                uri: 'https://www.pixel.web.id/wp-content/uploads/2022/05/Sony-Alpha-A7-IV.jpeg.webp',
-              }}
-            />
-            <View style={itemVertical.cardContent}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{gap: 2, width: '100%'}}>
-                  <Text style={itemVertical.cardCategory}>Kamera Sony</Text>
-                  <Text style={itemVertical.cardTitle}>Kamera Sony A7</Text>
-                </View>
-              </View>
-              <View style={itemVertical.cardInfo}>
-                {/* <MoneyRecive size={16} variant="Bold" color={colors.grey(0.6)} /> */}
-                <Text style={itemVertical.cardText}>Rp. 21.000.000</Text>
-                <Message size={10} variant="Linear" color={colors.grey(0.6)} />
-                <Text style={itemVertical.cardText}>Tersedia 4 </Text>
-              </View>
-            </View>
-          </View>
-
-          <View style={itemHorizontal.cardItem}>
-            <Image
-              style={itemHorizontal.cardImage}
-              source={{
-                uri: 'https://www.crkennedy.com.au/division/sigma/slider/assets/lens.jpg',
-              }}
-            />
-            <View style={itemVertical.cardContent}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{gap: 2, width: '100%'}}>
-                  <Text style={itemVertical.cardCategory}>Lensa</Text>
-                  <Text style={itemVertical.cardTitle}>
-                    Lensa Kamera DSLR & Mirrorless
-                  </Text>
-                </View>
-              </View>
-              <View style={itemVertical.cardInfo}>
-                {/* <MoneyRecive size={16} variant="Bold" color={colors.grey(0.6)} /> */}
-                <Text style={itemVertical.cardText}>Rp. 1.000.000</Text>
-                <Message size={10} variant="Linear" color={colors.grey(0.6)} />
-                <Text style={itemVertical.cardText}>Tersedia </Text>
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.listBlog}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}></ScrollView>
-            <View style={styles.listCategory}>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <View style={{...category.item, marginLeft: 10}}>
-                  <Text style={{...category.title, color: colors.black()}}>
-                    Lainnya
-                  </Text>
-                </View>
-              </ScrollView>
-            </View>
-            <View style={styles.listCategory}>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <TouchableOpacity styles={{backgroundColor: '#FFF2D8'}}>
-                  <View style={category.item}>
-                    <Text style={category.title}>Kamera</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity styles={{backgroundColor: '#FFF2D8'}}>
-                  <View style={category.item}>
-                    <Text style={category.title}>Lensa</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity styles={{backgroundColor: '#FFF2D8'}}>
-                  <View style={category.item}>
-                    <Text style={category.title}>Aksesoris</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity styles={{backgroundColor: '#FFF2D8'}}>
-                  <View style={category.item}>
-                    <Text style={category.title}>Servis</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity styles={{backgroundColor: '#FFF2D8'}}>
-                  <View style={category.item}>
-                    <Text style={category.title}>Hubungi Kami</Text>
-                  </View>
-                </TouchableOpacity>
-              </ScrollView>
-            </View>
-          </View>
-          
           {/* HALAMAN Admin */}
           <View style={itemVertical.listCard}>
             <View style={itemVertical.cardItem}>
@@ -202,7 +119,9 @@ export default function App() {
                   }}>
                   <View style={{gap: 5, width: '100%'}}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Text style={itemVertical.cardIcon}>Servis Kamera & Lensa</Text>
+                      <Text style={itemVertical.cardIcon}>
+                        Servis Kamera & Lensa
+                      </Text>
                     </View>
                   </View>
                 </View>
@@ -221,7 +140,9 @@ export default function App() {
                   }}>
                   <View style={{gap: 5, width: '100%'}}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Text style={itemVertical.cardIcon}>Metode Pembayaran</Text>
+                      <Text style={itemVertical.cardIcon}>
+                        Metode Pembayaran
+                      </Text>
                     </View>
                   </View>
                 </View>
@@ -273,7 +194,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white(),
+    backgroundColor: '#EEEEEE',
   },
   TextInput: {
     flexDirection: 'row',
@@ -284,7 +205,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     marginHorizontal: 1,
     color: '#001524',
-    marginVertical: 15,
+    marginVertical: 4,
   },
 
   header: {
@@ -298,11 +219,7 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 4,
   },
-  title: {
-    fontSize: 20,
-    fontFamily: fontType['Pjs-ExtraBold'],
-    color: colors.black(),
-  },
+
   listCategory: {
     paddingVertical: 10,
   },
@@ -310,10 +227,17 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     gap: 10,
   },
+
+  listCard: {
+    paddingVertical: 10,
+    gap: 10,
+    height: 345,
+    width: '100%',
+  },
 });
 const category = StyleSheet.create({
   item: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 25,
     alignItems: 'center',
@@ -330,7 +254,7 @@ const category = StyleSheet.create({
 
 const itemVertical = StyleSheet.create({
   listCard: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 2,
     paddingVertical: 10,
     gap: 15,
   },
@@ -388,12 +312,12 @@ const itemHorizontal = StyleSheet.create({
     width: '100%',
   },
   cardImage: {
-    width: '100%',
+    width: '10%',
     height: 200,
     borderRadius: 5,
   },
   cardImageservis: {
-    padding: 20,
+    padding: 200,
     borderRadius: 15,
     width: 100,
     height: 300,
