@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {User, Camera, Moneys} from 'iconsax-react-native';
 import {Element3} from 'iconsax-react-native';
-import {BlogList, CategoryList} from '../../../datasewaview';
+import {BlogList, CategoryList} from '../../../data';
 import {fontType, colors} from '../../theme';
 import {ItemSewa, ItemKameraview} from '../../components';
 
@@ -27,7 +27,7 @@ const ItemCategory = ({item, onPress, color}) => {
 
 const ListBlog = () => {
   //   const horizontalData = BlogList.slice(0,1);
-  const verticalData = BlogList.slice(0, 5);
+  const verticalData = BlogList.slice(8, 13);
 
   return (
     <View showsVerticalScrollIndicator={true}>

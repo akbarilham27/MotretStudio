@@ -15,7 +15,7 @@ import {
 import React from 'react';
 import FastImage from 'react-native-fast-image';
 import {ProfileData, BlogList} from '../../../data';
-import {ItemSmall} from '../../components';
+import {ListHorizontal} from '../../components';
 import {fontType, colors} from '../../theme';
 
 const formatNumber = number => {
@@ -82,7 +82,7 @@ const Profile = () => {
 
         <View style={{paddingVertical: 10, gap: 10}}>
           {data.map((item, index) => (
-            <ItemSmall item={item} key={index} />
+            <ListHorizontal item={item} key={index} />
           ))}
         </View>
         <TouchableOpacity style={profile.buttonNavbar}>

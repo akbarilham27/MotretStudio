@@ -46,7 +46,7 @@ const ItemVertical = ({item, variant, onPress}) => {
           }}>
           <Text style={{fontSize: 12, color: '#001524'}}>
             {itemVertical.cardjenis}
-            {item.jenis}
+            {item.judul}
           </Text>
           <Text style={{fontSize: 15, color: '#001524'}}>
             {itemVertical.cardjenis}

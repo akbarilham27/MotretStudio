@@ -5,15 +5,16 @@ import {useNavigation} from '@react-navigation/native';
 import {BlogList} from '../../../data';
 import FastImage from 'react-native-fast-image';
 import { fontType, colors } from '../../theme';
+
 const formatNumber = number => {
   if (number >= 1000000000) {
-    return (number / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
+    return (number / 1000000000).toFixed(1).replace(/\.0$/, '') + '   Juta';
   }
   if (number >= 1000000) {
-    return (number / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    return (number / 1000000).toFixed(1).replace(/\.0$/, '') + ' Juta';
   }
   if (number >= 1000) {
-    return (number / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return (number / 1000).toFixed(1).replace(/\.0$/, '') + '.000 ';
   }
   //  return number.toString();
 };
@@ -32,7 +33,7 @@ const BlogDetail = ({route}) => {
         variant: prevStates[iconName].variant === 'Linear' ? 'Bold' : 'Linear',
         color:
           prevStates[iconName].variant === 'Linear'
-            ? colors.blue()
+            ? colors.black()
             : colors.grey(0.6),
       },
     }));
@@ -72,18 +73,31 @@ const BlogDetail = ({route}) => {
           }}
           resizeMode={FastImage.resizeMode.cover}>
         </FastImage>
+
+{/* Memberikan Isi dari konten data.js */}
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             marginTop: 15,
           }}>
-          <Text style={styles.category}>{selectedBlog.category}</Text>
-          <Text style={styles.date}>{selectedBlog.createdAt}</Text>
+            <Text style={styles.content}>{selectedBlog.judul}</Text>
+        
         </View>
-        <Text style={styles.title}>{selectedBlog.title}</Text>
-        <Text style={styles.content}>{selectedBlog.content}</Text>
+        <View><Text style={styles.title}>{selectedBlog.kamera}</Text></View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginTop: 15,
+          }}>
+          <Text style={styles.category}>{selectedBlog.data}</Text>
+        </View>
+      
+        
       </ScrollView>
+
+
       <View style={styles.bottomBar}>
         <View style={{flexDirection:'row', gap:5, alignItems:'center'}}>
           <TouchableOpacity onPress={() => toggleIcon('liked')}>
@@ -158,14 +172,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   category: {
-    color: colors.blue(),
+    color: colors.black(),
     fontFamily: fontType['Pjs-SemiBold'],
     fontSize: 12,
+    
   },
   date: {
-    color: colors.grey(0.6),
+    color: colors.black(0.6),
     fontFamily: fontType['Pjs-Medium'],
-    fontSize: 10,
+    fontSize: 8,
   },
   title: {
     fontSize: 16,
