@@ -13,7 +13,7 @@ import {User, Camera, Moneys} from 'iconsax-react-native';
 import {Element3} from 'iconsax-react-native';
 import {BlogList, CategoryList} from '../../../datakameraview';
 import {fontType, colors} from '../../theme';
-import {ListHorizontal, ListVertical, ItemSmall} from '../../components';
+import {ListHorizontal, ListVertical, ItemKameraview} from '../../components';
 
 const ItemCategory = ({item, onPress, color}) => {
   return (
@@ -25,6 +25,19 @@ const ItemCategory = ({item, onPress, color}) => {
   );
 };
 
+const ListBlog = () => {
+  //   const horizontalData = BlogList.slice(0,1);
+  const verticalData = BlogList.slice(0, 5);
+
+  return (
+    <View showsVerticalScrollIndicator={true}>
+      <View style={styles.listBlog}>
+        {/* <ListHorizontal data={horizontalData} /> */}
+        <ItemKameraview data={verticalData} />
+      </View>
+    </View>
+  );
+};
 const FlatListCategory = () => {
   const [selected, setSelected] = useState(1);
   const renderItem = ({item}) => {
@@ -51,53 +64,26 @@ const FlatListCategory = () => {
   );
 };
 
-const ListBlog = () => {
-  //   const horizontalData = BlogList.slice(0,1);
-  const verticalData = BlogList.slice(0, 5);
-
-  return (
-    <ScrollView showsVerticalScrollIndicator={true}>
-      <View style={styles.listBlog}>
-        {/* <ListHorizontal data={horizontalData} /> */}
-        <ListVertical data={verticalData} />
-      </View>
-    </ScrollView>
-  );
-};
-
 export default function Home() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={{flexDirection: 'row'}}>
-          <User size="20" color="#001524" />
+          <Camera size="30" color="#001524" />
           <View style={{marginRight: 100}}>
-            <Text style={{fontSize: 16, color: '#001524'}}>
-              Hi, Mohammad Akbar Ilham
-            </Text>
+            <Text style={{fontSize: 25, color: '#001524'}}>Kamera Digital</Text>
           </View>
         </View>
       </View>
-
+      <TextInput
+        placeholder=" Apa yang sedang anda Butuhkan?"
+        placeholderTextColor="#B4B4B3"
+        style={styles.TextInput}
+      />
       <ScrollView>
-        <View style={styles.header}>
-          <View style={{flexDirection: 'row'}}>
-            <Camera size="30" color="#001524" />
-            <View style={{marginRight: 100}}>
-              <Text style={{fontSize: 25, color: '#001524'}}>
-                Kamera Digital
-              </Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.listCategory}>
-          <FlatListCategory />
-        </View>
-        <ListBlog />
-
         <View style={itemHorizontal.listCard}>
           {/* HALAMAN Admin */}
-          <TouchableOpacity>
+          {/* <TouchableOpacity>
             <View style={itemVertical.listCard}>
               <View style={itemVertical.cardItem}>
                 <Camera size="30" color="#7D7C7C" variant="Bold" />
@@ -187,9 +173,13 @@ export default function Home() {
                 </View>
               </View>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </ScrollView>
+      <View style={styles.listCategory}>
+        <FlatListCategory />
+      </View>
+      <ListBlog />
     </View>
   );
 }
@@ -228,10 +218,12 @@ const styles = StyleSheet.create({
   listBlog: {
     paddingVertical: 10,
     gap: 1,
+    width: '100%',
+    height: '95%',
   },
 
   listCard: {
-    paddingVertical: 10,
+    paddingVertical: 0,
     gap: 10,
     height: 345,
     width: '100%',

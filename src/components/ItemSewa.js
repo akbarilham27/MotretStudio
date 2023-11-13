@@ -4,11 +4,10 @@ import {AddSquare} from 'iconsax-react-native';
 import FastImage from 'react-native-fast-image';
 import {fontType, colors} from '../theme';
 import {useNavigation} from '@react-navigation/native';
-
 const ItemVertical = ({item, variant, onPress}) => {
   const navigation = useNavigation();
   return (
-    <TouchableOpacity style={itemVertical.cardItem} onPress={() => navigation.navigate('BlogDetail', {blogId: item.id})}>
+    <TouchableOpacity style={itemVertical.cardItem} onPress={()=>navigation.navigate('BlogDetail', {blogId: item.id})}>
       <FastImage
         style={itemVertical.cardImage}
         source={{
@@ -29,9 +28,6 @@ const ItemVertical = ({item, variant, onPress}) => {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={itemVertical.cardInfo}>
-            <Text style={itemVertical.cardjenis}>{item.kamera}</Text>
-          </View>
         </View>
       </FastImage>
       <View style={{flex: 1}}>
@@ -44,24 +40,24 @@ const ItemVertical = ({item, variant, onPress}) => {
             padding: 20,
             borderRadius: 1,
           }}>
-          <Text style={{fontSize: 12, color: '#001524'}}>
-            {itemVertical.cardjenis}
-            {item.jenis}
-          </Text>
           <Text style={{fontSize: 15, color: '#001524'}}>
             {itemVertical.cardjenis}
             {item.kamera}
           </Text>
-          <Text style={{fontSize: 17, color: '#001524'}}>
+          <Text style={{fontSize: 12, color: '#001524'}}>
             {itemVertical.cardjenis}
             {item.harga}
+          </Text>
+          <Text style={{fontSize: 12, color: '#001524'}}>
+            {itemVertical.cardjenis}
+            {item.harga1}
           </Text>
         </View>
       </View>
     </TouchableOpacity>
   );
 };
-const ItemKameraview = ({data}) => {
+const ItemSewa = ({data}) => {
   const [bookmark, setBookmark] = useState([]);
   const toggleBookmark = itemId => {
     if (bookmark.includes(itemId)) {
@@ -92,7 +88,7 @@ const ItemKameraview = ({data}) => {
     />
   );
 };
-export default ItemKameraview;
+export default ItemSewa;
 const itemVertical = StyleSheet.create({
   cardItem: {
     width: '100%',

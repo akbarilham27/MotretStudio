@@ -24,6 +24,19 @@ const ItemCategory = ({item, onPress, color}) => {
   );
 };
 
+const ListBlog = () => {
+  //   const horizontalData = BlogList.slice(0,1);
+  const verticalData = BlogList.slice(0, 5);
+
+  return (
+    <View showsVerticalScrollIndicator={true}>
+      <View style={styles.listBlog}>
+        {/* <ListHorizontal data={horizontalData} /> */}
+        <ListVertical data={verticalData} />
+      </View>
+    </View>
+  );
+};
 const FlatListCategory = () => {
   const [selected, setSelected] = useState(1);
   const renderItem = ({item}) => {
@@ -45,22 +58,8 @@ const FlatListCategory = () => {
       contentContainerStyle={{paddingHorizontal: 3}}
       horizontal
       //   showsHorizontalScrollIndicator={false}
-      showsVerticalScrollIndicator={true}
+      showsVerticalScrollIndicator={false}
     />
-  );
-};
-
-const ListBlog = () => {
-  //   const horizontalData = BlogList.slice(0,1);
-  const verticalData = BlogList.slice(0, 5);
-
-  return (
-    <ScrollView showsVerticalScrollIndicator={true}>
-      <View style={styles.listBlog}>
-        {/* <ListHorizontal data={horizontalData} /> */}
-        <ListVertical data={verticalData} />
-      </View>
-    </ScrollView>
   );
 };
 
@@ -77,39 +76,23 @@ export default function Home() {
           </View>
         </View>
       </View>
-      <ScrollView>
-        <View style={{flex: 1}}>
-          <View
-            style={{
-              marginHorizontal: 20,
-              marginVertical: 5,
-              backgroundColor: '#D0D4CA',
-              elevation: 2,
-              padding: 20,
-              borderRadius: 15,
-            }}>
-            <Text style={{fontSize: 32, color: '#001524'}}>Selamat Datang</Text>
-            <Text style={{fontSize: 18, color: '#001524'}}>
-              di MotretStudio Store{' '}
-            </Text>
-          </View>
-        </View>
-        <Text style={{fontSize: 15, color: '#001524', marginVertical: 7}}>
-          Apa yang sedang anda Butuhkan?
-        </Text>
-        <TextInput
-          placeholder="Search"
-          placeholderTextColor="#B4B4B3"
-          style={styles.TextInput}
-        />
-        <ListBlog />
-        <View style={styles.listCategory}>
-          <FlatListCategory />
-        </View>
 
-        <View style={itemHorizontal.listCard}>
-          {/* HALAMAN Admin */}
-          <TouchableOpacity>
+      <Text style={{fontSize: 15, color: '#001524', marginVertical: 7}}>
+        Apa yang sedang anda Butuhkan?
+      </Text>
+      <TextInput
+        placeholder="Search"
+        placeholderTextColor="#B4B4B3"
+        style={styles.TextInput}
+      />
+      <View style={styles.listCategory}>
+        <FlatListCategory />
+      </View>
+      <ListBlog />
+
+      <View style={itemHorizontal.listCard}>
+        {/* HALAMAN Admin */}
+        {/* <TouchableOpacity>
             <View style={itemVertical.listCard}>
               <View style={itemVertical.cardItem}>
                 <Camera size="30" color="#7D7C7C" variant="Bold" />
@@ -199,9 +182,8 @@ export default function Home() {
                 </View>
               </View>
             </View>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+          </TouchableOpacity> */}
+      </View>
     </View>
   );
 }
@@ -235,18 +217,21 @@ const styles = StyleSheet.create({
   },
 
   listCategory: {
-    paddingVertical: 10,
+    width: '100%',
+    paddingVertical: 15,
   },
   listBlog: {
-    paddingVertical: 10,
+    paddingVertical: 0,
     gap: 10,
+    width: '100%',
+    height: '88%',
   },
 
   listCard: {
     paddingVertical: 10,
     gap: 10,
-    height: 345,
     width: '100%',
+    height: '50%',
   },
 });
 const category = StyleSheet.create({
@@ -294,12 +279,7 @@ const itemVertical = StyleSheet.create({
     fontFamily: fontType['Pjs-Medium'],
     color: colors.blue(0.6),
   },
-  cardImage: {
-    width: 94,
-    height: 94,
-    borderRadius: 10,
-    resizeMode: 'cover',
-  },
+  cardImage: {},
   cardInfo: {
     flexDirection: 'row',
     gap: 5,
