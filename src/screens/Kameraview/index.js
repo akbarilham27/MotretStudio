@@ -1,14 +1,5 @@
 import React, {useState} from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  TextInput,
-  FlatList,
-  Image,
-} from 'react-native';
+import {TouchableOpacity,TextInput,Image,StyleSheet, Text, View, ScrollView, FlatList, Animated,} from 'react-native';
 import {User, Camera, Moneys} from 'iconsax-react-native';
 import {Element3} from 'iconsax-react-native';
 import {BlogList, CategoryList} from '../../../data';

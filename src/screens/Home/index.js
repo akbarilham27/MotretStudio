@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -8,11 +7,10 @@ import {
   TextInput,
   FlatList,
 } from 'react-native';
-import {User, Camera, Moneys} from 'iconsax-react-native';
-import {Element3} from 'iconsax-react-native';
+import {User} from 'iconsax-react-native';
 import {BlogList, CategoryList} from '../../../data';
 import {fontType, colors} from '../../theme';
-import {ListHorizontal, ListVertical, ItemSmall} from '../../components';
+import {ListVertical, } from '../../components';
 
 const ItemCategory = ({item, onPress, color}) => {
   return (

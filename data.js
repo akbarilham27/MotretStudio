@@ -42,7 +42,7 @@ export const BlogList = [
     image:
       'https://cdnaz.cekaja.com/media/2020/06/Menyediakan-Kamera-dengan-Berbagai-Macam-Jenis-Mau-Usaha-Rental-Kamera-Asuransikan-Kameramu-di-Sini.jpg',
     harga: 'Rp. 100.000',
-    data: 'MotretStudio juga memberikan pelayanan untuk Customer yang ingin melakukan Penyewaan berupa Kamera, Lensa, Tripod Dll. Dengan memberikan harga yang terjangkau dan pastinya mendapatkan banyak diskon pada setiap member dari MotretStudio. Kami juga memberikan pelayanan penyewaan dengan durasi Jam, Hari sampai Mingguan.',
+    data: 'MotretStudio juga memberikan pelayanan untuk Customer yang ingin melakukan Penyewaan berupa Kamera, Lensa, Tripod Dll. Dengan memberikan harga yang terjangkau dan pastinya mendapatkan banyak diskon pada setiap member dari MotretStudio. Kami juga memberikan pelayanan penyewaan dengan durasi Jam, Hari sampai Mingguan. MotretStudio juga memberikan pelayanan untuk Customer yang ingin melakukan Penyewaan berupa Kamera, Lensa, Tripod Dll. Dengan memberikan harga yang terjangkau dan pastinya mendapatkan banyak diskon pada setiap member dari MotretStudio. Kami juga memberikan pelayanan penyewaan dengan durasi Jam, Hari sampai Mingguan. MotretStudio juga memberikan pelayanan untuk Customer yang ingin melakukan Penyewaan berupa Kamera, Lensa, Tripod Dll. Dengan memberikan harga yang terjangkau dan pastinya mendapatkan banyak diskon pada setiap member dari MotretStudio. Kami juga memberikan pelayanan penyewaan dengan durasi Jam, Hari sampai Mingguan. MotretStudio juga memberikan pelayanan untuk Customer yang ingin melakukan Penyewaan berupa Kamera, Lensa, Tripod Dll. Dengan memberikan harga yang terjangkau dan pastinya mendapatkan banyak diskon pada setiap member dari MotretStudio. Kami juga memberikan pelayanan penyewaan dengan durasi Jam, Hari sampai Mingguan.',
   },
   {
     id: 3,
@@ -56,10 +56,10 @@ export const BlogList = [
     id: 4,
     judul: 'Penjualan Kamera',
     kamera: 'Kamera Fujifilm X-T20',
-    image:'https://images.tokopedia.net/blog-tokopedia-com/uploads/2020/06/KameraDigital.co_.id_.jpg',
+    image:
+      'https://images.tokopedia.net/blog-tokopedia-com/uploads/2020/06/KameraDigital.co_.id_.jpg',
     harga: 'Rp. 15.000.000',
     data: 'Kamera Fujifilm X-T20 dengan detail 24MP - APS-C CMOS X-TRANS III Sensor, 14 fps continuous shooting, ISO 200 - 12800( expands to 100-51200), 14 fps continuous shooting, 4K - 3840 x 2160 video resolution',
- 
   },
   {
     id: 5,
@@ -68,8 +68,7 @@ export const BlogList = [
     image:
       'https://www.infofotografi.com/blog/wp-content/uploads/2015/07/leica-m.jpg',
     harga: 'Rp. 56.000.000',
-    data: 'Kamera Leica dengan detail Dengan sensor 40MP ini, kualitas gambar dari segi detail, dynamic range lebih baik daripada kamera sebelumnya tanpa mengkompromikan kualitas gambar di ISO tinggi. Selain itu, exposure time/shutter speed maksimum kamera meningkat menjadi 16 menit dibandingkan dengan varian sebelumnya yang terbatas di 4 menit. Sedangkan shutter speed tercepat tetap sama yaitu 1/4000 detik secara mekanik. Sensor 40MP ini memiliki arsitektur sensor yang sama dengan kamera Leica S3, kamera DSLR medium format 64MP Leica yang terkenal dengan kualitas detail dan warnanya yang membuatnya diminati fotografer fashion, portrait dan landscape.',
- 
+    data: 'Kamera Leica dengan detail Dengan sensor 40MP ini, kualitas gambar dari segi detail, dynamic range lebih baik daripada kamera sebelumnya tanpa mengkompromikan kualitas gambar di ISO tinggi. Selain itu, exposure time/shutter speed maksimum kamera meningkat menjadi 16 menit dibandingkan dengan varian sebelumnya yang terbatas di 4 menit. Sedangkan shutter speed tercepat tetap sama yaitu 1/4000 detik secara mekanik. Sensor 40MP ini memiliki arsitektur sensor yang sama dengan kamera Leica S3, kamera DSLR medium format 64MP Leica yang terkenal dengan kualitas detail dan warnanya yang membuatnya diminati fotografer fashion, portrait dan landscape.  Kamera Leica dengan detail Dengan sensor 40MP ini, kualitas gambar dari segi detail, dynamic range lebih baik daripada kamera sebelumnya tanpa mengkompromikan kualitas gambar di ISO tinggi. Selain itu, exposure time/shutter speed maksimum kamera meningkat menjadi 16 menit dibandingkan dengan varian sebelumnya yang terbatas di 4 menit. Sedangkan shutter speed tercepat tetap sama yaitu 1/4000 detik secara mekanik. Sensor 40MP ini memiliki arsitektur sensor yang sama dengan kamera Leica S3, kamera DSLR medium format 64MP Leica yang terkenal dengan kualitas detail dan warnanya yang membuatnya diminati fotografer fashion, portrait dan landscape.   Kamera Leica dengan detail Dengan sensor 40MP ini, kualitas gambar dari segi detail, dynamic range lebih baik daripada kamera sebelumnya tanpa mengkompromikan kualitas gambar di ISO tinggi. Selain itu, exposure time/shutter speed maksimum kamera meningkat menjadi 16 menit dibandingkan dengan varian sebelumnya yang terbatas di 4 menit. Sedangkan shutter speed tercepat tetap sama yaitu 1/4000 detik secara mekanik. Sensor 40MP ini memiliki arsitektur sensor yang sama dengan kamera Leica S3, kamera DSLR medium format 64MP Leica yang terkenal dengan kualitas detail dan warnanya yang membuatnya diminati fotografer fashion, portrait dan landscape.',
   },
   {
     id: 6,
@@ -79,7 +78,6 @@ export const BlogList = [
       'https://cdn.shopk.it/usercontent/ftshopping/media/images/b4da524-123720-1589533357_216.jpg',
     harga: 'Rp. 26.000.000',
     data: 'Kamera Sony A7 III dengan detail Pixel: 24,2 MP, Resolusi video: 4K UHD at 30/24fps, Full HD at up to 120fps, Sensor: Full frame 35 mm (35,6×23,8mm), sensor CMOS Exmor R®, Sensitivitas: ISO 100-51,200 (dapat diekspansi 50-204,800), Baterai: NP-FZ100',
- 
   },
   {
     id: 7,
@@ -89,7 +87,6 @@ export const BlogList = [
       'https://4.bp.blogspot.com/-T0rrdQjQ9Bk/Wj4n9RKk4nI/AAAAAAAAAYY/7XGt2fWN93IRyz1bDdOHMYWv1CohX-KeACLcBGAs/s640/Canon-EOS-6D-Mark-II.jpg',
     harga: 'Rp. 16.300.000',
     data: 'Kamera Canon EOS 5D dengan detail One-Shot AF, AI Servo AF, AI Focus AF, Manual Focus (MF), 61 titik AF (Hingga 41 titik tipe silang), dengan 30 Pixel dengan ukuran sensor Full frame, dengan Format Gambar Tak-Gerak	JPEG, RAW, RAW + JPEG',
- 
   },
   {
     id: 8,
@@ -99,7 +96,6 @@ export const BlogList = [
       'https://assets.ayobandung.com/crop/0x0:0x0/750x500/webp/photo/2023/06/03/WhatsApp-Image-2023-06-03-at-110103-AM-1066586191.jpeg',
     harga: 'Rp. 9.000.000',
     data: 'Kamera Canon EOS M5 dengan detail dengan menggunakan 24 megapixels, sensor APS-C (22.3 x 14.9 mm), ISO	Auto, 100-25600, Videography features Modes 1920 x 1080 @ 60p / 35 Mbps, MP4, H.264, AAC',
- 
   },
   {
     id: 9,
@@ -117,7 +113,6 @@ export const BlogList = [
     harga: 'Rp. 100.000 / hari',
     harga1: 'Rp. 250.000 / 3 hari',
     data: 'Penyewaan Kamera Canon M100 dengan detail dengan menggunakan 16 megapixels, sensor APS-C. Harga sudah termasuk SANDISK EXTREME SDHC UHS-I 32GB V30 SD MEMORY CARD (90MB/S), BATTERY CANON LP E8, CHARGER BATTERY CAMERA CANON LC-E8E, Lensa kit',
-  
   },
   {
     id: 11,
@@ -127,7 +122,6 @@ export const BlogList = [
     harga: 'Rp. 70.000 / hari',
     harga1: 'Rp. 200.000 / 3 hari',
     data: 'Penyewaan Lensa Ultrasonic EF 10-22MM F/3.5. Harga sudah termasuk Pajak dan Biaya Perawatan',
-  
   },
   {
     id: 12,
@@ -137,7 +131,6 @@ export const BlogList = [
     harga: 'Rp. 200.000 / hari',
     harga1: 'Rp. 550.000 / 3 hari',
     data: 'Penyewaan Drone. Harga sudah termasuk Pajak dan Biaya Perawatan',
-  
   },
   {
     id: 13,
@@ -147,10 +140,8 @@ export const BlogList = [
     harga: 'Rp. 100.000 / hari',
     harga1: 'Rp. 250.000 / 3 hari',
     data: 'Penyewaan Godox-sk400. Harga sudah termasuk Lampu Godox, Trigger, Batrai dan Biaya Perawatan',
-  
   },
 ];
-
 
 export const ProfileData = {
   profilePict:

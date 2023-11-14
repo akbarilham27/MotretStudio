@@ -1,9 +1,15 @@
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Home, BlogDetail, Profile, Kameraview, Sewaview } from '../screens';
-import {Home2, LocationDiscover,Camera, Receipt21, ProfileCircle} from 'iconsax-react-native'; 
-import { fontType, colors } from '../theme';
+import {Home, BlogDetail, Profile, Kameraview, Sewaview} from '../screens';
+import {
+  Home2,
+  LocationDiscover,
+  Camera,
+  Receipt21,
+  ProfileCircle,
+} from 'iconsax-react-native';
+import {fontType, colors} from '../theme';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -100,11 +106,11 @@ const Router = () => {
         name="BlogDetail"
         component={BlogDetail}
         options={{
-          headerShown: false, 
+          headerShown: false,
           animationEnabled: true,
           animationTypeForReplace: 'pop',
           gestureEnabled: true,
-          gestureDirection : 'horizontal',
+          gestureDirection: 'horizontal',
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />

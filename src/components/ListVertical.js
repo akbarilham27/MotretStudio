@@ -7,7 +7,9 @@ import {useNavigation} from '@react-navigation/native';
 const ItemVertical = ({item, variant, onPress}) => {
   const navigation = useNavigation();
   return (
-    <TouchableOpacity style={itemVertical.cardItem} onPress={() => navigation.navigate('BlogDetail', {blogId: item.id})}>
+    <TouchableOpacity
+      style={itemVertical.cardItem}
+      onPress={() => navigation.navigate('BlogDetail', {blogId: item.id})}>
       <FastImage
         style={itemVertical.cardImage}
         source={{

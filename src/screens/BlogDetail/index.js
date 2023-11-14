@@ -1,10 +1,17 @@
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
-import {ArrowLeft, Like1, Receipt21, Message, Share, More} from 'iconsax-react-native';
+import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Animated} from 'react-native';
+import React, {useState, useRef} from 'react';
+import {
+  ArrowLeft,
+  Like1,
+  Receipt21,
+  Message,
+  Share,
+  More,
+} from 'iconsax-react-native';
 import {useNavigation} from '@react-navigation/native';
 import {BlogList} from '../../../data';
 import FastImage from 'react-native-fast-image';
-import { fontType, colors } from '../../theme';
+import {fontType, colors} from '../../theme';
 
 const formatNumber = number => {
   if (number >= 1000000000) {
@@ -19,6 +26,13 @@ const formatNumber = number => {
   //  return number.toString();
 };
 const BlogDetail = ({route}) => {
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const diffClampY = Animated.diffClamp(scrollY, 0, 52);
+  const headerY = diffClampY.interpolate({
+    inputRange: [0, 52],
+    outputRange: [0, -52],
+  });
+
   const {blogId} = route.params;
   const [iconStates, setIconStates] = useState({
     liked: {variant: 'Linear', color: colors.grey(0.6)},
@@ -40,13 +54,9 @@ const BlogDetail = ({route}) => {
   };
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <Animated.View style={[styles.header, {transform: [{translateY: headerY}]}]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowLeft
-            color={colors.grey(0.6)}
-            variant="Linear"
-            size={24}
-          />
+          <ArrowLeft color={colors.grey(0.6)} variant="Linear" size={24} />
         </TouchableOpacity>
         <View style={{flexDirection: 'row', justifyContent: 'center', gap: 20}}>
           <Share color={colors.grey(0.6)} variant="Linear" size={24} />
@@ -56,9 +66,13 @@ const BlogDetail = ({route}) => {
             style={{transform: [{rotate: '90deg'}]}}
           />
         </View>
-      </View>
-      <ScrollView
+      </Animated.View>
+      <Animated.ScrollView
         showsVerticalScrollIndicator={false}
+        onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {y: scrollY}}}],
+          {useNativeDriver: true},
+        )}
         contentContainerStyle={{
           paddingHorizontal: 24,
           paddingTop: 62,
@@ -71,20 +85,20 @@ const BlogDetail = ({route}) => {
             headers: {Authorization: 'someAuthToken'},
             priority: FastImage.priority.high,
           }}
-          resizeMode={FastImage.resizeMode.cover}>
-        </FastImage>
+          resizeMode={FastImage.resizeMode.cover}></FastImage>
 
-{/* Memberikan Isi dari konten data.js */}
+        {/* Memberikan Isi dari konten data.js */}
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             marginTop: 15,
           }}>
-            <Text style={styles.content}>{selectedBlog.judul}</Text>
-        
+          <Text style={styles.content}>{selectedBlog.judul}</Text>
         </View>
-        <View><Text style={styles.title}>{selectedBlog.kamera}</Text></View>
+        <View>
+          <Text style={styles.title}>{selectedBlog.kamera}</Text>
+        </View>
         <View
           style={{
             flexDirection: 'row',
@@ -93,13 +107,10 @@ const BlogDetail = ({route}) => {
           }}>
           <Text style={styles.category}>{selectedBlog.data}</Text>
         </View>
-      
-        
-      </ScrollView>
+      </Animated.ScrollView>
 
-
-      <View style={styles.bottomBar}>
-        <View style={{flexDirection:'row', gap:5, alignItems:'center'}}>
+      <Animated.View style={styles.bottomBar}>
+        <View style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
           <TouchableOpacity onPress={() => toggleIcon('liked')}>
             <Like1
               color={iconStates.liked.color}
@@ -111,11 +122,11 @@ const BlogDetail = ({route}) => {
             {formatNumber(selectedBlog.totalLikes)}
           </Text>
         </View>
-        <View style={{flexDirection:'row', gap:5, alignItems:'center'}}>
-        <Message color={colors.grey(0.6)} variant="Linear" size={24} />
-        <Text style={styles.info}>
-          {formatNumber(selectedBlog.totalComments)}
-        </Text>
+        <View style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
+          <Message color={colors.grey(0.6)} variant="Linear" size={24} />
+          <Text style={styles.info}>
+            {formatNumber(selectedBlog.totalComments)}
+          </Text>
         </View>
         <TouchableOpacity onPress={() => toggleIcon('bookmarked')}>
           <Receipt21
@@ -124,7 +135,7 @@ const BlogDetail = ({route}) => {
             size={24}
           />
         </TouchableOpacity>
-      </View>
+      </Animated.View>
     </View>
   );
 };
@@ -175,7 +186,6 @@ const styles = StyleSheet.create({
     color: colors.black(),
     fontFamily: fontType['Pjs-SemiBold'],
     fontSize: 12,
-    
   },
   date: {
     color: colors.black(0.6),
