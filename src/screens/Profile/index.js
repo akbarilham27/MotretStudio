@@ -13,6 +13,8 @@ import {
   ArchiveTick,
 } from 'iconsax-react-native';
 import React from 'react';
+import { Edit } from "iconsax-react-native";
+import { useNavigation } from "@react-navigation/native";
 import FastImage from 'react-native-fast-image';
 import {ProfileData, BlogList} from '../../../data';
 import {ListHorizontal} from '../../components';
@@ -33,6 +35,7 @@ const formatNumber = number => {
 
 const data = BlogList.slice(5);
 const Profile = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -80,7 +83,7 @@ const Profile = () => {
           </TouchableOpacity>
         </View>
 
-        <View style={{paddingVertical: 10, gap: 10}}>
+        <View style={{paddingVertical: 0, gap: 0}}>
           {data.map((item, index) => (
             <ListHorizontal item={item} key={index} />
           ))}
@@ -106,6 +109,11 @@ const Profile = () => {
           <Text style={profile.buttonText}>Pengaturan Akun </Text>
         </TouchableOpacity>
       </ScrollView>
+      {/* <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={() => navigation.navigate('AddBlog')}>
+        <Edit color={colors.white()} variant="Linear" size={20} />
+      </TouchableOpacity> */}
     </View>
   );
 };
@@ -131,6 +139,23 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: fontType['Pjs-ExtraBold'],
     color: colors.black(),
+  },
+  floatingButton: {
+    backgroundColor: colors.blue(),
+    padding: 15,
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
+    borderRadius: 10,
+    shadowColor: colors.blue(),
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+
+    elevation: 8,
   },
 });
 const profile = StyleSheet.create({

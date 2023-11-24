@@ -1,11 +1,11 @@
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Home, BlogDetail, Profile, Kameraview, Sewaview} from '../screens';
+import {Home, BlogDetail, Profile, Kameraview, Sewaview, Search,AddBlogForm} from '../screens';
 import {
   Home2,
   LocationDiscover,
-  Camera,
+  Camera,AddCircle,
   Receipt21,
   ProfileCircle,
 } from 'iconsax-react-native';
@@ -18,7 +18,7 @@ function MainApp() {
     <Tab.Navigator
       screenOptions={{
         tabBarHideOnKeyboard: true,
-        tabBarActiveTintColor: colors.blue(),
+        tabBarActiveTintColor: colors.black(),
         tabBarInactiveTintColor: colors.black(),
         tabBarStyle: {
           paddingBottom: 10,
@@ -35,12 +35,12 @@ function MainApp() {
         name="Home"
         component={Home}
         options={{
-          tabBarLabel: 'Home',
+          tabBarLabel: '',
           tabBarIcon: ({focused, color}) => (
             <Home2
               color={color}
               variant={focused ? 'Bold' : 'Linear'}
-              size={24}
+              size={28}
             />
           ),
           headerShown: false,
@@ -50,12 +50,27 @@ function MainApp() {
         name="Kameraview"
         component={Kameraview}
         options={{
-          tabBarLabel: 'Kamera',
+          tabBarLabel: '',
           tabBarIcon: ({focused, color}) => (
             <Camera
               color={color}
               variant={focused ? 'Bold' : 'Linear'}
-              size={24}
+              size={28}
+            />
+          ),
+          headerShown: false,
+        }}
+      />
+       <Tab.Screen
+        name="AddBlogForm"
+        component={AddBlogForm}
+        options={{
+          tabBarLabel: '',
+          tabBarIcon: ({focused, color}) => (
+            <AddCircle
+              color={color}
+              variant={focused ? 'Bold' : 'Linear'}
+              size={34}
             />
           ),
           headerShown: false,
@@ -65,12 +80,12 @@ function MainApp() {
         name="Sewaview"
         component={Sewaview}
         options={{
-          tabBarLabel: 'Sewa',
+          tabBarLabel: '',
           tabBarIcon: ({focused, color}) => (
             <Receipt21
               color={color}
               variant={focused ? 'Bold' : 'Linear'}
-              size={24}
+              size={28}
             />
           ),
           headerShown: false,
@@ -80,12 +95,12 @@ function MainApp() {
         name="Profile"
         component={Profile}
         options={{
-          tabBarLabel: 'Profile',
+          tabBarLabel: '',
           tabBarIcon: ({focused, color}) => (
             <ProfileCircle
               color={color}
               variant={focused ? 'Bold' : 'Linear'}
-              size={24}
+              size={28}
             />
           ),
           headerShown: false,
@@ -111,6 +126,26 @@ const Router = () => {
           animationTypeForReplace: 'pop',
           gestureEnabled: true,
           gestureDirection: 'horizontal',
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <Stack.Screen
+        name="SearchPage"
+        component={Search}
+        options={{
+          headerShown: false,
+          presentation: 'transparentModal',
+        }}
+      />
+<Stack.Screen
+        name="AddBlog"
+        component={AddBlogForm}
+        options={{
+          headerShown: false,
+          animationEnabled: true,
+          animationTypeForReplace: 'pop',
+          gestureEnabled: true,
+          gestureDirection : 'horizontal',
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />

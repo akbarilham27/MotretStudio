@@ -1,10 +1,17 @@
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Animated} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Animated,
+} from 'react-native';
 import React, {useState, useRef} from 'react';
 import {
   ArrowLeft,
-  Like1,
+  Back,
   Receipt21,
-  Message,
+  Information,
   Share,
   More,
 } from 'iconsax-react-native';
@@ -13,18 +20,7 @@ import {BlogList} from '../../../data';
 import FastImage from 'react-native-fast-image';
 import {fontType, colors} from '../../theme';
 
-const formatNumber = number => {
-  if (number >= 1000000000) {
-    return (number / 1000000000).toFixed(1).replace(/\.0$/, '') + '   Juta';
-  }
-  if (number >= 1000000) {
-    return (number / 1000000).toFixed(1).replace(/\.0$/, '') + ' Juta';
-  }
-  if (number >= 1000) {
-    return (number / 1000).toFixed(1).replace(/\.0$/, '') + '.000 ';
-  }
-  //  return number.toString();
-};
+
 const BlogDetail = ({route}) => {
   const scrollY = useRef(new Animated.Value(0)).current;
   const diffClampY = Animated.diffClamp(scrollY, 0, 52);
@@ -35,8 +31,8 @@ const BlogDetail = ({route}) => {
 
   const {blogId} = route.params;
   const [iconStates, setIconStates] = useState({
-    liked: {variant: 'Linear', color: colors.grey(0.6)},
-    bookmarked: {variant: 'Linear', color: colors.grey(0.6)},
+    // liked: {variant: 'Linear', color: colors.grey(0.6)},
+    Information: {variant: 'Linear', color: colors.grey(0.6)},
   });
   const selectedBlog = BlogList.find(blog => blog.id === blogId);
   const navigation = useNavigation();
@@ -54,8 +50,9 @@ const BlogDetail = ({route}) => {
   };
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.header, {transform: [{translateY: headerY}]}]}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+      <Animated.View
+        style={[styles.header, {transform: [{translateY: headerY}]}]}>
+        {/* <TouchableOpacity onPress={() => navigation.goBack()}>
           <ArrowLeft color={colors.grey(0.6)} variant="Linear" size={24} />
         </TouchableOpacity>
         <View style={{flexDirection: 'row', justifyContent: 'center', gap: 20}}>
@@ -65,7 +62,8 @@ const BlogDetail = ({route}) => {
             variant="Linear"
             style={{transform: [{rotate: '90deg'}]}}
           />
-        </View>
+        </View> */}
+        <Text style={styles.contentnavbar}>{selectedBlog.judul}</Text>
       </Animated.View>
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
@@ -110,31 +108,19 @@ const BlogDetail = ({route}) => {
       </Animated.ScrollView>
 
       <Animated.View style={styles.bottomBar}>
-        <View style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
-          <TouchableOpacity onPress={() => toggleIcon('liked')}>
-            <Like1
-              color={iconStates.liked.color}
-              variant={iconStates.liked.variant}
-              size={24}
-            />
+        <View style={{flexDirection: 'row', gap: 10, alignItems: 'center'}}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                gap: 20,
+                paddingLeft: 100,
+              }}>
+              <ArrowLeft color={colors.grey(0.6)} variant="Linear" size={30} />
+            </View>
           </TouchableOpacity>
-          <Text style={styles.info}>
-            {formatNumber(selectedBlog.totalLikes)}
-          </Text>
         </View>
-        <View style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
-          <Message color={colors.grey(0.6)} variant="Linear" size={24} />
-          <Text style={styles.info}>
-            {formatNumber(selectedBlog.totalComments)}
-          </Text>
-        </View>
-        <TouchableOpacity onPress={() => toggleIcon('bookmarked')}>
-          <Receipt21
-            color={iconStates.bookmarked.color}
-            variant={iconStates.bookmarked.variant}
-            size={24}
-          />
-        </TouchableOpacity>
       </Animated.View>
     </View>
   );
@@ -202,6 +188,13 @@ const styles = StyleSheet.create({
     color: colors.grey(),
     fontFamily: fontType['Pjs-Medium'],
     fontSize: 10,
+    lineHeight: 20,
+    marginTop: 15,
+  },
+  contentnavbar: {
+    color: colors.grey(),
+    fontFamily: fontType['Pjs-Medium'],
+    fontSize: 15,
     lineHeight: 20,
     marginTop: 15,
   },

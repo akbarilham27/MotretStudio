@@ -3,14 +3,15 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
+  TouchableOpacity,TouchableWithoutFeedback,
   TextInput,
   FlatList,
 } from 'react-native';
-import {User} from 'iconsax-react-native';
+import {User, SearchNormal1} from 'iconsax-react-native';
 import {BlogList, CategoryList} from '../../../data';
 import {fontType, colors} from '../../theme';
 import {ListVertical, } from '../../components';
+import { useNavigation } from "@react-navigation/native";
 
 const ItemCategory = ({item, onPress, color}) => {
   return (
@@ -36,6 +37,7 @@ const ListBlog = () => {
   );
 };
 const FlatListCategory = () => {
+  
   const [selected, setSelected] = useState(1);
   const renderItem = ({item}) => {
     const color = item.id === selected ? colors.black() : colors.grey();
@@ -48,6 +50,7 @@ const FlatListCategory = () => {
     );
   };
   return (
+    
     <FlatList
       data={CategoryList}
       keyExtractor={item => item.id}
@@ -62,6 +65,7 @@ const FlatListCategory = () => {
 };
 
 export default function Home() {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -74,6 +78,16 @@ export default function Home() {
           </View>
         </View>
       </View>
+{/* 
+      <TouchableWithoutFeedback onPress={() => navigation.navigate("SearchPage")}>
+      <View style={styles.header}>
+        <View style={styles.bar}>
+          <SearchNormal1 size={18} color={colors.grey(0.5)} variant="Linear" />
+          <Text style={styles.placeholder}>Search</Text>
+        </View>
+      </View>
+      </TouchableWithoutFeedback>
+ */}
 
       <Text style={{fontSize: 15, color: '#001524', marginVertical: 7}}>
         Apa yang sedang anda Butuhkan?
