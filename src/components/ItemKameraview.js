@@ -1,5 +1,7 @@
 import {StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
+import {Receipt21, Clock, Message} from 'iconsax-react-native';
+import {formatDate} from '../utils/formatDate';
 import {AddSquare} from 'iconsax-react-native';
 import FastImage from 'react-native-fast-image';
 import {fontType, colors} from '../theme';
@@ -55,6 +57,7 @@ const ItemVertical = ({item, variant, onPress}) => {
             {item.kamera}
           </Text>
           <Text style={{fontSize: 17, color: '#001524'}}>
+          {/* <Text style={itemVertical.cardText}>{formatDate(item?.createdAt)}</Text> */}
             {itemVertical.cardjenis}
             {item.harga}
           </Text>
@@ -63,6 +66,8 @@ const ItemVertical = ({item, variant, onPress}) => {
     </TouchableOpacity>
   );
 };
+// export default ItemKameraview;
+
 const ItemKameraview = ({data}) => {
   const [bookmark, setBookmark] = useState([]);
   const toggleBookmark = itemId => {

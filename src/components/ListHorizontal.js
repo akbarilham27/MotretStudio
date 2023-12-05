@@ -1,10 +1,16 @@
 import {StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import {AddSquare} from 'iconsax-react-native';
 import FastImage from 'react-native-fast-image';
 import {fontType, colors} from '../theme';
+import {formatDate} from '../utils/formatDate';
 const ItemHorizontal = ({item, variant, onPress}) => {
   return (
+    <TouchableOpacity
+      style={itemHorizontal.cardItem}
+      //ini navigation
+      onPress={() => useNavigation.navigate('BlogDetail', {blogId: item.id})}>
     <View style={itemHorizontal.cardItem}>
       <FastImage
         style={itemHorizontal.cardImage}
@@ -20,6 +26,7 @@ const ItemHorizontal = ({item, variant, onPress}) => {
           </View>
           <View>
             <View style={itemHorizontal.cardIcon}>
+            <Text style={styles.cardText}>{formatDate(item?.createdAt)}</Text>
               <TouchableOpacity onPress={onPress}>
                 <AddSquare
                   color={colors.darkModeBlack()}
@@ -32,8 +39,11 @@ const ItemHorizontal = ({item, variant, onPress}) => {
         </View>
       </FastImage>
     </View>
+    </TouchableOpacity>
   );
 };
+
+
 const ListHorizontal = ({data}) => {
   const [bookmark, setBookmark] = useState([]);
   const toggleBookmark = itemId => {

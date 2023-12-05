@@ -1,7 +1,7 @@
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Home, BlogDetail, Profile, Kameraview, Sewaview, Search,AddBlogForm} from '../screens';
+import {Home, BlogDetail, Profile, Kameraview, Sewaview, Search,AddBlogForm,EditBlogForm} from '../screens';
 import {
   Home2,
   LocationDiscover,
@@ -91,7 +91,7 @@ function MainApp() {
           headerShown: false,
         }}
       />
-      <Tab.Screen
+     <Tab.Screen
         name="Profile"
         component={Profile}
         options={{
@@ -100,13 +100,13 @@ function MainApp() {
             <ProfileCircle
               color={color}
               variant={focused ? 'Bold' : 'Linear'}
-              size={28}
+              size={24}
             />
           ),
           headerShown: false,
         }}
       />
-    </Tab.Navigator>
+      </Tab.Navigator>
   );
 }
 const Router = () => {
@@ -146,6 +146,18 @@ const Router = () => {
           animationTypeForReplace: 'pop',
           gestureEnabled: true,
           gestureDirection : 'horizontal',
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+          <Stack.Screen
+        name="EditBlog"
+        component={EditBlogForm}
+        options={{
+          headerShown: false,
+          animationEnabled: true,
+          animationTypeForReplace: 'pop',
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />

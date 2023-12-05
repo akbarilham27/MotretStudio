@@ -1,17 +1,22 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,TouchableWithoutFeedback,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  ActivityIndicator,
+  RefreshControl,
   TextInput,
   FlatList,
+  ScrollView,
 } from 'react-native';
-import {User, SearchNormal1} from 'iconsax-react-native';
+import {User, Edit, SearchNormal1} from 'iconsax-react-native';
 import {BlogList, CategoryList} from '../../../data';
 import {fontType, colors} from '../../theme';
-import {ListVertical, } from '../../components';
-import { useNavigation } from "@react-navigation/native";
+import {ListVertical, ItemSmall} from '../../components';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import axios from 'axios';
 
 const ItemCategory = ({item, onPress, color}) => {
   return (
@@ -37,7 +42,6 @@ const ListBlog = () => {
   );
 };
 const FlatListCategory = () => {
-  
   const [selected, setSelected] = useState(1);
   const renderItem = ({item}) => {
     const color = item.id === selected ? colors.black() : colors.grey();
@@ -50,7 +54,6 @@ const FlatListCategory = () => {
     );
   };
   return (
-    
     <FlatList
       data={CategoryList}
       keyExtractor={item => item.id}
@@ -66,6 +69,37 @@ const FlatListCategory = () => {
 
 export default function Home() {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+  const [blogData, setBlogData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const getDataBlog = async () => {
+    try {
+      const response = await axios.get(
+        'https://656c4b10e1e03bfd572e28c6.mockapi.io/blog',
+      );
+      setBlogData(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      getDataBlog();
+      setRefreshing(false);
+    }, 1500);
+  }, []);
+
+  useEffect(() => {
+    console.log(blogData);
+  }, [blogData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      getDataBlog();
+    }, []),
+  );
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -78,16 +112,6 @@ export default function Home() {
           </View>
         </View>
       </View>
-{/* 
-      <TouchableWithoutFeedback onPress={() => navigation.navigate("SearchPage")}>
-      <View style={styles.header}>
-        <View style={styles.bar}>
-          <SearchNormal1 size={18} color={colors.grey(0.5)} variant="Linear" />
-          <Text style={styles.placeholder}>Search</Text>
-        </View>
-      </View>
-      </TouchableWithoutFeedback>
- */}
 
       <Text style={{fontSize: 15, color: '#001524', marginVertical: 7}}>
         Apa yang sedang anda Butuhkan?
@@ -100,102 +124,34 @@ export default function Home() {
       <View style={styles.listCategory}>
         <FlatListCategory />
       </View>
-      <ListBlog />
+      {/* <ListBlog /> */}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: 24,
+          gap: 10,
+          paddingVertical: 20,
+        }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <View style={{gap: 15, alignItems: 'center'}}>
+        </View>
+        <View style={{paddingVertical: 10, gap: 10}}>
+          {loading ? (
+            <ActivityIndicator size={'large'} color={colors.blue()} />
+          ) : (
+            blogData.map((item, index) => <ItemSmall item={item} key={index} />)
 
-      <View style={itemHorizontal.listCard}>
-        {/* HALAMAN Admin */}
-        {/* <TouchableOpacity>
-            <View style={itemVertical.listCard}>
-              <View style={itemVertical.cardItem}>
-                <Camera size="30" color="#7D7C7C" variant="Bold" />
-                <View style={itemVertical.cardContent}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <View style={{gap: 5, width: '100%'}}>
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={itemVertical.cardIcon}>
-                          Servis Kamera & Lensa
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </TouchableOpacity>
+          )}
+        </View>
+      </ScrollView>
 
-          <TouchableOpacity>
-            <View style={itemVertical.listCard}>
-              <View style={itemVertical.cardItem}>
-                <Moneys size="30" color="#7D7C7C" variant="Bold" />
-                <View style={itemVertical.cardContent}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <View style={{gap: 5, width: '100%'}}>
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={itemVertical.cardIcon}>
-                          Metode Pembayaran
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity>
-            <View style={itemVertical.listCard}>
-              <View style={itemVertical.cardItem}>
-                <User size="30" color="#7D7C7C" variant="Bold" />
-                <View style={itemVertical.cardContent}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <View style={{gap: 5, width: '100%'}}>
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={itemVertical.cardIcon}>Admin 1</Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity>
-            <View style={itemVertical.listCard}>
-              <View style={itemVertical.cardItem}>
-                <User size="30" color="#7D7C7C" variant="Bold" />
-                <View style={itemVertical.cardContent}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <View style={{gap: 5, width: '100%'}}>
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={itemVertical.cardIcon}>Admin 2</Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </TouchableOpacity> */}
-      </View>
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={() => navigation.navigate('  Home')}>
+        <Edit color={colors.white()} variant="Linear" size={20} />
+      </TouchableOpacity>
     </View>
   );
 }

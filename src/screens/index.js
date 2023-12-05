@@ -5,4 +5,5 @@ import Sewaview from './Sewaview';
 import Profile from './Profile';
 import Search from "./Search";
 import AddBlogForm from "./AddBlogForm";
-export {Home, BlogDetail, Kameraview, Sewaview, Profile, Search, AddBlogForm };
+import EditBlogForm from "./EditBlogForm";
+export {Home, BlogDetail, Kameraview, Sewaview, Profile, Search, AddBlogForm,EditBlogForm };

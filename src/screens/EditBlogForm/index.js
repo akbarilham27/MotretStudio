@@ -1,35 +1,32 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,ActivityIndicator,
+  ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import {ArrowLeft, Verify} from 'iconsax-react-native';
 import {useNavigation} from '@react-navigation/native';
 import {fontType, colors} from '../../theme';
 import axios from 'axios';
 
-const AddBlogForm = () => {
-  // const dataJenis = [
-  //   {id: 1, name: 'Baru'},
-  //   {id: 2, name: 'Bekas'},
-  // ];
+const EditBlogForm = ({route}) => {
+  const {blogId} = route.params;
   const dataCategory = [
     {id: 1, name: ' Kamera  '},
     {id: 2, name: ' Lensa '},
     {id: 3, name: ' Aksesoris'},
     {id: 4, name: 'Penyewaan'},
   ];
-  const [harga, setHarga] = useState(null);
+ 
   const [blogData, setBlogData] = useState({
     judul: '',
     kamera: '',
+    harga: '',
     category: {},
-    totalLikes: 0,
-    totalComments: 0,
   });
   const handleChange = (key, value) => {
     setBlogData({
@@ -38,20 +35,45 @@ const AddBlogForm = () => {
     });
   };
   const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [harga, setHarga] = useState(null);
   const navigation = useNavigation();
-  const handleUpload = async () => {
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    getBlogById();
+  }, [blogId]);
+
+  const getBlogById = async () => {
+    try {
+      const response = await axios.get(
+        `https://656c4b10e1e03bfd572e28c6.mockapi.io/blog/${blogId}`,
+      );
+      setBlogData({
+        judul: response.data.judul,
+        kamera: response.data.kamera,
+        harga: response.data.harga,
+        category: {
+          id: response.data.category.id,
+          name: response.data.category.name,
+        },
+      });
+      setImage(response.data.image);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleUpdate = async () => {
     setLoading(true);
     try {
-      await axios.post('https://656c4b10e1e03bfd572e28c6.mockapi.io/blog', {
+      await axios
+        .put(`https://656c4b10e1e03bfd572e28c6.mockapi.io/blog/${blogId}`, {
           judul: blogData.judul,
           kamera: blogData.kamera,
           image,
           harga,
           category: blogData.category,
           content: blogData.content,
-          totalComments: blogData.totalComments,
-          totalLikes: blogData.totalLikes,
           createdAt: new Date(),
         })
         .then(function (response) {
@@ -66,6 +88,7 @@ const AddBlogForm = () => {
       console.log(e);
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -73,11 +96,11 @@ const AddBlogForm = () => {
           <ArrowLeft color={colors.black()} variant="Linear" size={24} />
         </TouchableOpacity>
         <View style={{flex: 1, alignItems: 'center'}}>
-          <Text style={styles.title}>Postingan Baru</Text>
+          <Text style={styles.title}>Edit Postingan</Text>
         </View>
-        <TouchableOpacity style={styles.button} onPress={handleUpload}>
-          <Text style={styles.buttonLabel}>Upload</Text>
-</TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleUpdate}>
+          <Text style={styles.buttonLabel}>Update</Text>
+        </TouchableOpacity>
       </View>
       <ScrollView
         contentContainerStyle={{
@@ -97,7 +120,7 @@ const AddBlogForm = () => {
         </View>
         <View style={[textInput.borderDashed, {minHeight: 20}]}>
           <TextInput
-            placeholder="Tulis Keterangan "
+            placeholder="Tulis Keterangan ....."
             value={blogData.kamera}
             onChangeText={text => handleChange('kamera', text)}
             placeholderTextColor={colors.black(0.6)}
@@ -109,7 +132,7 @@ const AddBlogForm = () => {
           <TextInput
             placeholder="Harga"
             keyboardType="numeric"
-            value={blogData.harga}
+            value={harga}
             onChangeText={text => setHarga(text)}
             placeholderTextColor={colors.black(0.6)}
             multiline
@@ -173,11 +196,11 @@ const AddBlogForm = () => {
               const bgColor =
                 item.id === blogData.category.id
                   ? colors.black()
-                  : colors.blue(0.08);
+                  : colors.black(0.08);
               const color =
                 item.id === blogData.category.id
                   ? colors.white()
-                  : colors.grey();
+                  : colors.white();
               return (
                 <TouchableOpacity
                   key={index}
@@ -193,20 +216,17 @@ const AddBlogForm = () => {
             })}
           </View>
         </View>
-        
+
         <TouchableOpacity onPress={() => handleChange()}>
           <Verify color={colors.black()} variant="Linear" size={24} />
-          </TouchableOpacity>
-          <View style={{marginRight: 1}}>
-            <Text style={{fontSize: 14 , color: '#001524'}}>
-              Saya Telah Memasukan Data Dengan Benar
-            </Text>
-          </View>
-        
+        </TouchableOpacity>
+        <View style={{marginRight: 1}}>
+          <Text style={{fontSize: 14, color: '#001524'}}>
+            Saya Telah Memasukan Data Dengan Benar
+          </Text>
+        </View>
       </ScrollView>
-      {/* <View style={styles.bottomBar}>
-       
-      </View> */}
+
       {loading && (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator size="large" color={colors.blue()} />
@@ -216,19 +236,9 @@ const AddBlogForm = () => {
   );
 };
 
-export default AddBlogForm;
+export default EditBlogForm;
 
 const styles = StyleSheet.create({
-  loadingOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: colors.black(0.4),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   container: {
     flex: 1,
     backgroundColor: '#BCA37F',
@@ -248,7 +258,7 @@ const styles = StyleSheet.create({
     color: colors.black(),
   },
   bottomBar: {
-    backgroundColor: '#B99470',
+    backgroundColor: colors.white(),
     alignItems: 'flex-end',
     paddingHorizontal: 24,
     paddingVertical: 10,
@@ -275,6 +285,16 @@ const styles = StyleSheet.create({
     fontFamily: fontType['Pjs-SemiBold'],
     color: colors.white(),
   },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: colors.black(0.4),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 const textInput = StyleSheet.create({
   borderDashed: {
@@ -285,7 +305,7 @@ const textInput = StyleSheet.create({
     borderColor: colors.black(0.9),
   },
   title: {
-    fontSize: 12,
+    fontSize: 16,
     fontFamily: fontType['Pjs-SemiBold'],
     color: colors.black(),
     padding: 0,
@@ -306,8 +326,8 @@ const category = StyleSheet.create({
   container: {
     flexWrap: 'wrap',
     flexDirection: 'row',
-    gap: 1,
-    marginTop: 6,
+    gap: 10,
+    marginTop: 10,
   },
   item: {
     paddingHorizontal: 14,
