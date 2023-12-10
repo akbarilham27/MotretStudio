@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "909175217273",
+    "project_id": "motretstudio-4029c",
+    "storage_bucket": "motretstudio-4029c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:909175217273:android:5cae707d39811c39b988a8",
+        "android_client_info": {
+          "package_name": "com.motretstudio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDccoA8Zx8wZZyT8kLG2TgLnjDncrLB8kY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,22 +1,12 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  ActivityIndicator,
-  RefreshControl,
-  TextInput,
-  FlatList,
-  ScrollView,
+import {StyleSheet,Text,  View, TouchableOpacity, ActivityIndicator, RefreshControl, TextInput,FlatList,ScrollView,
 } from 'react-native';
 import {User, Edit, SearchNormal1} from 'iconsax-react-native';
 import {BlogList, CategoryList} from '../../../data';
 import {fontType, colors} from '../../theme';
 import {ListVertical, ItemSmall} from '../../components';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
-import axios from 'axios';
+import firestore from '@react-native-firebase/firestore';
 
 const ItemCategory = ({item, onPress, color}) => {
   return (
@@ -28,19 +18,19 @@ const ItemCategory = ({item, onPress, color}) => {
   );
 };
 
-const ListBlog = () => {
-  //   const horizontalData = BlogList.slice(0,1);
-  const verticalData = BlogList.slice(0, 3);
+// const ListBlog = () => {
+//   //   const horizontalData = BlogList.slice(0,1);
+//   const verticalData = BlogList.slice(0, 3);
 
-  return (
-    <View showsVerticalScrollIndicator={true}>
-      <View style={styles.listBlog}>
-        {/* <ListHorizontal data={horizontalData} /> */}
-        <ListVertical data={verticalData} />
-      </View>
-    </View>
-  );
-};
+//   return (
+//     <View showsVerticalScrollIndicator={true}>
+//       <View style={styles.listBlog}>
+//         {/* <ListHorizontal data={horizontalData} /> */}
+//         <ListVertical data={verticalData} />
+//       </View>
+//     </View>
+//   );
+// };
 const FlatListCategory = () => {
   const [selected, setSelected] = useState(1);
   const renderItem = ({item}) => {
@@ -72,34 +62,40 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [blogData, setBlogData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const getDataBlog = async () => {
-    try {
-      const response = await axios.get(
-        'https://656c4b10e1e03bfd572e28c6.mockapi.io/blog',
-      );
-      setBlogData(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('blog')
+      .onSnapshot(querySnapshot => {
+        const blogs = [];
+        querySnapshot.forEach(documentSnapshot => {
+          blogs.push({
+            ...documentSnapshot.data(),
+            id: documentSnapshot.id,
+          });
+        });
+        setBlogData(blogs);
+        setLoading(false);
+      });
+    return () => subscriber();
+  }, []);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
-      getDataBlog();
+      firestore()
+        .collection('blog')
+        .onSnapshot(querySnapshot => {
+          const blogs = [];
+          querySnapshot.forEach(documentSnapshot => {
+            blogs.push({
+              ...documentSnapshot.data(),
+              id: documentSnapshot.id,
+            });
+          });
+          setBlogData(blogs);
+        });
       setRefreshing(false);
     }, 1500);
   }, []);
-
-  useEffect(() => {
-    console.log(blogData);
-  }, [blogData]);
-
-  useFocusEffect(
-    useCallback(() => {
-      getDataBlog();
-    }, []),
-  );
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -135,14 +131,12 @@ export default function Home() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        <View style={{gap: 15, alignItems: 'center'}}>
-        </View>
+        <View style={{gap: 15, alignItems: 'center'}}></View>
         <View style={{paddingVertical: 10, gap: 10}}>
           {loading ? (
             <ActivityIndicator size={'large'} color={colors.blue()} />
           ) : (
             blogData.map((item, index) => <ItemSmall item={item} key={index} />)
-
           )}
         </View>
       </ScrollView>
@@ -155,10 +149,11 @@ export default function Home() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EEEEEE',
+    backgroundColor: '#F3EEEA',
   },
   TextInput: {
     flexDirection: 'row',

@@ -1,82 +1,74 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Animated,
-  ActivityIndicator,
-} from 'react-native';
+import {StyleSheet,Text, View, TouchableOpacity, Animated, ActivityIndicator,} from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
-import {
-  ArrowLeft,
-  Back,
-  Receipt21,
-  Information,
-  Share,
-  Setting2,
-} from 'iconsax-react-native';
+import {ArrowLeft,Setting2,} from 'iconsax-react-native';
 import {useNavigation} from '@react-navigation/native';
-import {BlogList} from '../../../data';
 import FastImage from 'react-native-fast-image';
 import {fontType, colors} from '../../theme';
-import {formatNumber} from '../../utils/formatNumber';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 import {formatDate} from '../../utils/formatDate';
-import axios from 'axios';
 import ActionSheet from 'react-native-actions-sheet';
 
 const BlogDetail = ({route}) => {
   const {blogId} = route.params;
+  const navigation = useNavigation();
   const [iconStates, setIconStates] = useState({
     liked: {variant: 'Linear', color: colors.grey(0.6)},
     bookmarked: {variant: 'Linear', color: colors.grey(0.6)},
   });
-  const [selectedBlog, setSelectedBlog] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [selectedBlog, setSelectedBlog] = useState(null);
   const actionSheetRef = useRef(null);
-
   const openActionSheet = () => {
     actionSheetRef.current?.show();
   };
-
   const closeActionSheet = () => {
     actionSheetRef.current?.hide();
   };
-
   useEffect(() => {
-    getBlogById();
+    const subscriber = firestore()
+      .collection('blog')
+      .doc(blogId)
+      .onSnapshot(documentSnapshot => {
+        const blogData = documentSnapshot.data();
+        if (blogData) {
+          console.log('Blog data: ', blogData);
+          setSelectedBlog(blogData);
+        } else {
+          console.log(`Blog with ID ${blogId} not found.`);
+        }
+      });
+    setLoading(false);
+    return () => subscriber();
   }, [blogId]);
-
-  const getBlogById = async () => {
-    try {
-      const response = await axios.get(
-        `https://656c4b10e1e03bfd572e28c6.mockapi.io/blog/${blogId}`,
-      );
-      setSelectedBlog(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const navigateEdit = () => {
     closeActionSheet();
     navigation.navigate('EditBlog', {blogId});
   };
   const handleDelete = async () => {
-    await axios
-      .delete(`https://656c4b10e1e03bfd572e28c6.mockapi.io/blog/${blogId}`)
-      .then(() => {
-        closeActionSheet();
-        navigation.navigate('Home');
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    setLoading(true);
+    try {
+      await firestore()
+        .collection('blog')
+        .doc(blogId)
+        .delete()
+        .then(() => {
+          console.log('Blog deleted!');
+        });
+      if (selectedBlog?.image) {
+        const imageRef = storage().refFromURL(selectedBlog?.image);
+        await imageRef.delete();
+      }
+      console.log('Blog deleted!');
+      closeActionSheet();
+      setSelectedBlog(null);
+      setLoading(false);
+      navigation.navigate('Home');
+    } catch (error) {
+      console.error(error);
+    }
   };
-
-  const navigation = useNavigation();
   const scrollY = useRef(new Animated.Value(0)).current;
   const diffClampY = Animated.diffClamp(scrollY, 0, 52);
   const headerY = diffClampY.interpolate({
@@ -147,22 +139,20 @@ const BlogDetail = ({route}) => {
               justifyContent: 'space-between',
               marginTop: 15,
             }}>
-            <Text style={styles.category}>{selectedBlog?.judul}</Text>
+            <Text style={styles.category}>{selectedBlog?.name}</Text>
 
+            <Text style={styles.date}>
+              {formatDate(selectedBlog?.createdAt)}
+            </Text>
+          </View>
+          <View>
+            <Text style={styles.category}>{selectedBlog?.judul}</Text>
             <Text style={styles.data}>
               {formatDate(selectedBlog?.createdAt)}
             </Text>
           </View>
           <View>
             <Text style={styles.title}>{selectedBlog?.kamera}</Text>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginTop: 15,
-            }}>
-            <Text style={styles.category}>{selectedBlog?.harga}</Text>
           </View>
         </Animated.ScrollView>
       )}

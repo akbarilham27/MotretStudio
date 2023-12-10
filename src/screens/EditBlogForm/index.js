@@ -1,17 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  ActivityIndicator,
-} from 'react-native';
-import {ArrowLeft, Verify} from 'iconsax-react-native';
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView,  ActivityIndicator,} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {ArrowLeft, AddSquare, Add} from 'iconsax-react-native';
 import {useNavigation} from '@react-navigation/native';
 import {fontType, colors} from '../../theme';
-import axios from 'axios';
+import ImagePicker from 'react-native-image-crop-picker';
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 
 const EditBlogForm = ({route}) => {
   const {blogId} = route.params;
@@ -21,11 +16,9 @@ const EditBlogForm = ({route}) => {
     {id: 3, name: ' Aksesoris'},
     {id: 4, name: 'Penyewaan'},
   ];
- 
   const [blogData, setBlogData] = useState({
     judul: '',
     kamera: '',
-    harga: '',
     category: {},
   });
   const handleChange = (key, value) => {
@@ -35,57 +28,78 @@ const EditBlogForm = ({route}) => {
     });
   };
   const [image, setImage] = useState(null);
-  const [harga, setHarga] = useState(null);
+  const [oldImage, setOldImage] = useState(null);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    getBlogById();
+    const subscriber = firestore()
+      .collection('blog')
+      .doc(blogId)
+      .onSnapshot(documentSnapshot => {
+        const blogData = documentSnapshot.data();
+        if (blogData) {
+          console.log('Blog data: ', blogData);
+          setBlogData({
+            judul: blogData.judul,
+            kamera: blogData.kamera,
+            category: {
+              id: blogData.category.id,
+              name: blogData.category.name,
+            },
+          });
+          setOldImage(blogData.image);
+          setImage(blogData.image);
+          setLoading(false);
+        } else {
+          console.log(`Blog with ID ${blogId} not found.`);
+        }
+      });
+    setLoading(false);
+    return () => subscriber();
   }, [blogId]);
 
-  const getBlogById = async () => {
-    try {
-      const response = await axios.get(
-        `https://656c4b10e1e03bfd572e28c6.mockapi.io/blog/${blogId}`,
-      );
-      setBlogData({
-        judul: response.data.judul,
-        kamera: response.data.kamera,
-        harga: response.data.harga,
-        category: {
-          id: response.data.category.id,
-          name: response.data.category.name,
-        },
+  const handleImagePick = async () => {
+    ImagePicker.openPicker({
+      width: 1920,
+      height: 1080,
+      cropping: true,
+    })
+      .then(image => {
+        console.log(image);
+        setImage(image.path);
+      })
+      .catch(error => {
+        console.log(error);
       });
-      setImage(response.data.image);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   const handleUpdate = async () => {
     setLoading(true);
+    let filename = image.substring(image.lastIndexOf('/') + 1);
+    const extension = filename.split('.').pop();
+    const name = filename.split('.').slice(0, -1).join('.');
+    filename = name + Date.now() + '.' + extension;
+    const reference = storage().ref(`blogimages/${filename}`);
     try {
-      await axios
-        .put(`https://656c4b10e1e03bfd572e28c6.mockapi.io/blog/${blogId}`, {
-          judul: blogData.judul,
-          kamera: blogData.kamera,
-          image,
-          harga,
-          category: blogData.category,
-          content: blogData.content,
-          createdAt: new Date(),
-        })
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      if (image !== oldImage && oldImage) {
+        const oldImageRef = storage().refFromURL(oldImage);
+        await oldImageRef.delete();
+      }
+      if (image !== oldImage) {
+        await reference.putFile(image);
+      }
+      const url =
+        image !== oldImage ? await reference.getDownloadURL() : oldImage;
+      await firestore().collection('blog').doc(blogId).update({
+        judul: blogData.judul,
+        kamera: blogData.kamera,
+        image: url,
+      });
       setLoading(false);
-      navigation.navigate('Home');
-    } catch (e) {
-      console.log(e);
+      console.log('Blog Updated!');
+      navigation.navigate('BlogDetail', {blogId});
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -96,7 +110,7 @@ const EditBlogForm = ({route}) => {
           <ArrowLeft color={colors.black()} variant="Linear" size={24} />
         </TouchableOpacity>
         <View style={{flex: 1, alignItems: 'center'}}>
-          <Text style={styles.title}>Edit Postingan</Text>
+          <Text style={styles.title}>Edit blog</Text>
         </View>
         <TouchableOpacity style={styles.button} onPress={handleUpdate}>
           <Text style={styles.buttonLabel}>Update</Text>
@@ -110,55 +124,35 @@ const EditBlogForm = ({route}) => {
         }}>
         <View style={textInput.borderDashed}>
           <TextInput
-            placeholder="Nama Barang"
+            placeholder="judul"
             value={blogData.judul}
             onChangeText={text => handleChange('judul', text)}
-            placeholderTextColor={colors.black(0.6)}
+            placeholderTextColor={colors.white(0.6)}
             multiline
-            style={textInput.judul}
+            style={textInput.title}
           />
         </View>
-        <View style={[textInput.borderDashed, {minHeight: 20}]}>
+        <View style={[textInput.borderDashed]}>
           <TextInput
-            placeholder="Tulis Keterangan ....."
+            placeholder="kamera"
             value={blogData.kamera}
             onChangeText={text => handleChange('kamera', text)}
-            placeholderTextColor={colors.black(0.6)}
+            placeholderTextColor={colors.white(0.8)}
             multiline
-            style={textInput.kamera}
-          />
-        </View>
-        <View style={[textInput.borderDashed]}>
-          <TextInput
-            placeholder="Harga"
-            keyboardType="numeric"
-            value={harga}
-            onChangeText={text => setHarga(text)}
-            placeholderTextColor={colors.black(0.6)}
-            multiline
-            style={textInput.harga}
-          />
-        </View>
-        <View style={[textInput.borderDashed]}>
-          <TextInput
-            placeholder="Image"
-            value={image}
-            onChangeText={text => setImage(text)}
-            placeholderTextColor={colors.black(0.6)}
             style={textInput.content}
           />
         </View>
-        {/* <View style={[textInput]}>
+        <View style={[textInput.borderDashed]}>
           <Text
             style={{
               fontSize: 12,
-              fontFamily: fontType['Pjs-Bold'],
-              color: colors.black(0.6),
+              fontFamily: fontType['Pjs-Regular'],
+              color: colors.white(0.6),
             }}>
-            Kondisi
+            Category
           </Text>
           <View style={category.container}>
-            {dataJenis.map((item, index) => {
+            {dataCategory.map((item, index) => {
               const bgColor =
                 item.id === blogData.category.id
                   ? colors.black()
@@ -181,50 +175,59 @@ const EditBlogForm = ({route}) => {
               );
             })}
           </View>
-        </View> */}
-        <View style={[textInput]}>
-          <Text
-            style={{
-              fontSize: 12,
-              fontFamily: fontType['Pjs-Bold'],
-              color: colors.black(0.6),
-            }}>
-            Jenis
-          </Text>
-          <View style={category.container}>
-            {dataCategory.map((item, index) => {
-              const bgColor =
-                item.id === blogData.category.id
-                  ? colors.black()
-                  : colors.black(0.08);
-              const color =
-                item.id === blogData.category.id
-                  ? colors.white()
-                  : colors.white();
-              return (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() =>
-                    handleChange('category', {id: item.id, name: item.name})
-                  }
-                  style={[category.item, {backgroundColor: bgColor}]}>
-                  <Text style={[category.name, {color: color}]}>
-                    {item.name}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+        </View>
+        {image ? (
+          <View style={{position: 'relative'}}>
+            <FastImage
+              style={{width: '100%', height: 127, borderRadius: 5}}
+              source={{
+                uri: image,
+                headers: {Authorization: 'someAuthToken'},
+                priority: FastImage.priority.high,
+              }}
+              resizeMode={FastImage.resizeMode.cover}
+            />
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: -5,
+                right: -5,
+                backgroundColor: colors.blue(),
+                borderRadius: 25,
+              }}
+              onPress={() => setImage(null)}>
+              <Add
+                size={20}
+                variant="Linear"
+                color={colors.white()}
+                style={{transform: [{rotate: '45deg'}]}}
+              />
+            </TouchableOpacity>
           </View>
-        </View>
-
-        <TouchableOpacity onPress={() => handleChange()}>
-          <Verify color={colors.black()} variant="Linear" size={24} />
-        </TouchableOpacity>
-        <View style={{marginRight: 1}}>
-          <Text style={{fontSize: 14, color: '#001524'}}>
-            Saya Telah Memasukan Data Dengan Benar
-          </Text>
-        </View>
+        ) : (
+          <TouchableOpacity onPress={handleImagePick}>
+            <View
+              style={[
+                textInput.borderDashed,
+                {
+                  gap: 10,
+                  paddingVertical: 30,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                },
+              ]}>
+              <AddSquare color={colors.white(0.6)} variant="Linear" size={42} />
+              <Text
+                style={{
+                  fontFamily: fontType['Pjs-Regular'],
+                  fontSize: 12,
+                  color: colors.white(0.6),
+                }}>
+                Upload Thumbnail
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
       </ScrollView>
 
       {loading && (
@@ -298,11 +301,11 @@ const styles = StyleSheet.create({
 });
 const textInput = StyleSheet.create({
   borderDashed: {
-    borderStyle: 'solid',
+    borderStyle: 'dashed',
     borderWidth: 1,
-    borderRadius: 15,
+    borderRadius: 5,
     padding: 10,
-    borderColor: colors.black(0.9),
+    borderColor: colors.white(0.4),
   },
   title: {
     fontSize: 16,
@@ -321,7 +324,7 @@ const category = StyleSheet.create({
   title: {
     fontSize: 12,
     fontFamily: fontType['Pjs-Regular'],
-    color: colors.grey(0.6),
+    color: colors.white(0.6),
   },
   container: {
     flexWrap: 'wrap',
