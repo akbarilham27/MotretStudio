@@ -124,7 +124,7 @@ const EditBlogForm = ({route}) => {
         }}>
         <View style={textInput.borderDashed}>
           <TextInput
-            placeholder="judul"
+            placeholder="Kamera, Lensa, Aksesoris, Penyewaan"
             value={blogData.judul}
             onChangeText={text => handleChange('judul', text)}
             placeholderTextColor={colors.white(0.6)}
@@ -134,7 +134,7 @@ const EditBlogForm = ({route}) => {
         </View>
         <View style={[textInput.borderDashed]}>
           <TextInput
-            placeholder="kamera"
+            placeholder="Deskripsi"
             value={blogData.kamera}
             onChangeText={text => handleChange('kamera', text)}
             placeholderTextColor={colors.white(0.8)}
@@ -149,7 +149,7 @@ const EditBlogForm = ({route}) => {
               fontFamily: fontType['Pjs-Regular'],
               color: colors.white(0.6),
             }}>
-            Category
+            Jenis
           </Text>
           <View style={category.container}>
             {dataCategory.map((item, index) => {
@@ -223,7 +223,7 @@ const EditBlogForm = ({route}) => {
                   fontSize: 12,
                   color: colors.white(0.6),
                 }}>
-                Upload Thumbnail
+                Tambahkan Gambar
               </Text>
             </View>
           </TouchableOpacity>

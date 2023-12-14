@@ -13,12 +13,12 @@ export const formatDate = createdAt => {
       'Sep',
       'Oct',
       'Nov',
-      'Dec',
+      'Desember',
     ];
     const year = createdAtDate.getFullYear();
     const month = months[createdAtDate.getMonth()];
     const day = createdAtDate.getDate();
-    return `${month} ${day}, ${year}`;
+    return `${day} ${month} ${year}`;
   } else {
     return '';
   }

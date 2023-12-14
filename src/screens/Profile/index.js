@@ -1,47 +1,118 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-} from 'react-native';
-import {
-  Setting2,
-  Moneys,
-  ArrowLeft,
-  Bag2,
-  ArchiveTick,
-} from 'iconsax-react-native';
-import React from 'react';
-import { Edit } from "iconsax-react-native";
-import { useNavigation } from "@react-navigation/native";
+import {ScrollView, StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, RefreshControl} from 'react-native';
+import {Edit, Setting2} from 'iconsax-react-native';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
 import FastImage from 'react-native-fast-image';
-import {ProfileData, BlogList} from '../../../data';
-import {ListHorizontal} from '../../components';
+import {ItemSmall} from '../../components';
+import {useNavigation} from '@react-navigation/native';
 import {fontType, colors} from '../../theme';
+import firestore from '@react-native-firebase/firestore';
+import {formatNumber} from '../../utils/formatNumber';
+import auth from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {formatDate} from '../../utils/formatDate';
+import ActionSheet from 'react-native-actions-sheet';
 
-const formatNumber = number => {
-  if (number >= 1000000000) {
-    return (number / 1000000000).toFixed(1).replace(/\.0$/, '') + '   Juta';
-  }
-  if (number >= 1000000) {
-    return (number / 1000000).toFixed(1).replace(/\.0$/, '') + ' Juta';
-  }
-  if (number >= 1000) {
-    return (number / 1000).toFixed(1).replace(/\.0$/, '') + '.000 ';
-  }
-  return number.toString();
-};
-
-const data = BlogList.slice(5);
 const Profile = () => {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+  const [blogData, setBlogData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [profileData, setProfileData] = useState(null);
+  const actionSheetRef = useRef(null);
+  const openActionSheet = () => {
+    actionSheetRef.current?.show();
+  };
+  const closeActionSheet = () => {
+    actionSheetRef.current?.hide();
+  };
+  useEffect(() => {
+    const user = auth().currentUser;
+    const fetchBlogData = () => {
+      try {
+        if (user) {
+          const userId = user.uid;
+          const blogCollection = firestore().collection('blog');
+          const query = blogCollection.where('authorId', '==', userId);
+          const unsubscribeBlog = query.onSnapshot(querySnapshot => {
+            const blogs = querySnapshot.docs.map(doc => ({
+              ...doc.data(),
+              id: doc.id,
+            }));
+            setBlogData(blogs);
+            setLoading(false);
+          });
+
+          return () => {
+            unsubscribeBlog();
+          };
+        }
+      } catch (error) {
+        console.error('Error fetching blog data:', error);
+      }
+    };
+
+    const fetchProfileData = () => {
+      try {
+        const user = auth().currentUser;
+        if (user) {
+          const userId = user.uid;
+          const userRef = firestore().collection('users').doc(userId);
+
+          const unsubscribeProfile = userRef.onSnapshot(doc => {
+            if (doc.exists) {
+              const userData = doc.data();
+              setProfileData(userData);
+              fetchBlogData();
+            } else {
+              console.error('Dokumen pengguna tidak ditemukan.');
+            }
+          });
+
+          return () => {
+            unsubscribeProfile();
+          };
+        }
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+    fetchBlogData();
+    fetchProfileData();
+  }, []);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      firestore()
+        .collection('blog')
+        .onSnapshot(querySnapshot => {
+          const blogs = [];
+          querySnapshot.forEach(documentSnapshot => {
+            blogs.push({
+              ...documentSnapshot.data(),
+              id: documentSnapshot.id,
+            });
+          });
+          setBlogData(blogs);
+        });
+      setRefreshing(false);
+    }, 1500);
+  }, []);
+  const handleLogout = async () => {
+    try {
+      closeActionSheet();
+      await auth().signOut();
+      await AsyncStorage.removeItem('userData');
+      navigation.replace('Login');
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Bag2 color={colors.black()} variant="Linear" size={27} />
-        <ArchiveTick color={colors.black()} variant="Linear" size={27} />
-        <Setting2 color={colors.black()} variant="Linear" size={27} />
+        <TouchableOpacity onPress={openActionSheet}>
+          <Setting2 color={colors.black()} variant="Linear" size={24} />
+        </TouchableOpacity>
       </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -49,91 +120,124 @@ const Profile = () => {
           paddingHorizontal: 24,
           gap: 10,
           paddingVertical: 20,
-        }}>
+        }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <View style={{gap: 15, alignItems: 'center'}}>
           <FastImage
             style={profile.pic}
             source={{
-              uri: ProfileData.profilePict,
+              uri: profileData?.photoUrl,
               headers: {Authorization: 'someAuthToken'},
               priority: FastImage.priority.high,
             }}
             resizeMode={FastImage.resizeMode.cover}
           />
           <View style={{gap: 5, alignItems: 'center'}}>
-            <Text style={profile.name}>{ProfileData.name}</Text>
+            <Text style={profile.name}>{profileData?.fullName}</Text>
             <Text style={profile.info}>
-              Terdaftar Pada {ProfileData.createdAt}
+              Terdaftar Pada {formatDate(profileData?.createdAt)}
             </Text>
           </View>
           <View style={{flexDirection: 'row', gap: 20}}>
             <View style={{alignItems: 'center', gap: 5}}>
-              <Text style={profile.sum}>
-                {formatNumber(ProfileData.totalbeli)}
-              </Text>
+              <Text style={profile.sum}>{profileData?.totalPost}</Text>
               <Text style={profile.tag}>Total Pembelian</Text>
             </View>
+            
             <View style={{alignItems: 'center', gap: 5}}>
-              <Text style={profile.sum}>{formatNumber(ProfileData.saldo)}</Text>
+              <Text style={profile.sum}>
+                {formatNumber(profileData?.followersCount)}
+              </Text>
               <Text style={profile.tag}>Isi Saldo</Text>
             </View>
           </View>
           <TouchableOpacity style={profile.buttonEdit}>
             <Text style={profile.buttonText}>Edit Profile</Text>
           </TouchableOpacity>
-        </View>
-
-        <View style={{paddingVertical: 0, gap: 0}}>
-          {data.map((item, index) => (
-            <ListHorizontal item={item} key={index} />
-          ))}
-        </View>
-        <TouchableOpacity style={profile.buttonNavbar}>
+          <TouchableOpacity style={profile.buttonNavbar}>
           <Text style={profile.buttonText}>Pesanan </Text>
         </TouchableOpacity>
-
-        <TouchableOpacity style={profile.buttonNavbar}>
-          <Text style={profile.buttonText}>Pengiriman </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={profile.buttonNavbar}>
-          {/* <Moneys size="30" color="#7D7C7C" variant="Bold" /> */}
-          <Text style={profile.buttonText}>Pembayaran </Text>
-        </TouchableOpacity>
-
         <TouchableOpacity style={profile.buttonNavbar}>
           <Text style={profile.buttonText}>Voucher </Text>
         </TouchableOpacity>
-
-        <TouchableOpacity style={profile.buttonNavbar}>
-          <Text style={profile.buttonText}>Pengaturan Akun </Text>
+          <TouchableOpacity style={profile.buttonkeluar}
+          onPress={handleLogout}>
+          <Text
+            style={{
+              fontFamily: fontType['Pjs-Medium'],
+              color: colors.black(),
+              fontSize: 15,
+            }}>
+            Log out
+          </Text>
         </TouchableOpacity>
+      
+       
+
+        </View>
+        {/* <View style={{paddingVertical: 10, gap: 10}}>
+          {loading ? (
+            <ActivityIndicator size={'large'} color={colors.blue()} />
+          ) : (
+            blogData.map((item, index) => <ItemSmall item={item} key={index} />)
+          )}
+        </View> */}
       </ScrollView>
-      {/* <TouchableOpacity
-        style={styles.floatingButton}
-        onPress={() => navigation.navigate('AddBlog')}>
-        <Edit color={colors.white()} variant="Linear" size={20} />
-      </TouchableOpacity> */}
+      
+      <ActionSheet
+        ref={actionSheetRef}
+        containerStyle={{
+          borderTopLeftRadius: 25,
+          borderTopRightRadius: 25,
+        }}
+        indicatorStyle={{
+          width: 100,
+        }}
+        gestureEnabled={true}
+        defaultOverlayOpacity={0.3}>
+      
+        <TouchableOpacity
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingVertical: 15,
+          }}
+          onPress={closeActionSheet}>
+          <Text
+            style={{
+              fontFamily: fontType['Pjs-Medium'],
+              color: 'red',
+              fontSize: 18,
+            }}>
+            Cancel
+          </Text>
+        </TouchableOpacity>
+      </ActionSheet>
     </View>
   );
 };
-
 export default Profile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white(),
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   header: {
-    paddingHorizontal: 2,
+    paddingHorizontal: 24,
     justifyContent: 'flex-end',
     flexDirection: 'row',
     alignItems: 'center',
-    height: 50,
+    height: 52,
     elevation: 8,
     paddingTop: 8,
     paddingBottom: 4,
-    size: 20,
   },
   title: {
     fontSize: 20,
@@ -154,7 +258,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 4.65,
-
     elevation: 8,
   },
 });
@@ -163,7 +266,7 @@ const profile = StyleSheet.create({
   name: {
     color: colors.black(),
     fontSize: 20,
-    fontFamily: fontType['Pjs-Bold'],
+    fontFamily: fontType['Pjs-ExtraBold'],
     textTransform: 'capitalize',
   },
   info: {
@@ -187,15 +290,21 @@ const profile = StyleSheet.create({
     backgroundColor: colors.grey(0.1),
     borderRadius: 10,
   },
-  buttonText: {
-    fontSize: 14,
-    fontFamily: fontType['Pjs-Bold'],
-    color: '#7D7C7C',
-  },
-  buttonNavbar: {
-    paddingHorizontal: 16,
+buttonNavbar: {
+    paddingHorizontal: 127,
     paddingVertical: 14,
     backgroundColor: colors.grey(0.1),
+    borderRadius: 10,
+  },
+  buttonText: {
+    fontSize: 14,
+    fontFamily: fontType['Pjs-SemiBold'],
+    color: colors.black(),
+  },
+  buttonkeluar : {
+    paddingHorizontal: 127,
+    paddingVertical: 14,
+    backgroundColor: colors.darkModeBlack(0.1),
     borderRadius: 10,
   },
 });
